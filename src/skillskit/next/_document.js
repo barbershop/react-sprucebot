@@ -38,6 +38,16 @@ export default class MyDocument extends Document {
 		return { ...page, styleTags, whitelabel, auth, config, orgWhitelabel }
 	}
 
+	componentDidMount() {
+		// NOTE: Doing this require here so that we can be sure the global window is defined
+		const WebFont = require('webfontloader'); //eslint-disable-line
+		WebFont.load({
+			google: {
+				families: ['Material Icons']
+			}
+		})
+	}
+
 	render() {
 		let whitelabelClassName =
 			this.props.config && this.props.config.SLUG
