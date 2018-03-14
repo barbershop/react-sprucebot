@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React from 'react'
 
 const I = styled.i.attrs({
 	className: ({ className }) => `Icon icon material-icons ${className || ''}`
