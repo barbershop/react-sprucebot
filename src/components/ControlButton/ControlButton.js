@@ -21,25 +21,25 @@ const Wrapper = styled.a.attrs({
 	align-items: center;
 	position: relative;
 `
-export default class ControlButton extends Component {
-	render() {
-		const { iconLeft, iconRight, onClick, children, ...props } = this.props
-
-		return (
-			<Wrapper
-				onClick={onClick}
-				iconLeft={iconLeft}
-				iconRight={iconRight}
-				{...props}
-				tabIndex={0}
-			>
-				{iconLeft && <StyledIconLeft>{iconLeft}</StyledIconLeft>}
-				<span>{children}</span>
-				{iconRight && <StyledIconRight>{iconRight}</StyledIconRight>}
-			</Wrapper>
-		)
-	}
-}
+const ControlButton = ({
+	iconLeft,
+	iconRight,
+	onClick,
+	children,
+	...props
+}) => (
+	<Wrapper
+		onClick={onClick}
+		iconLeft={iconLeft}
+		iconRight={iconRight}
+		{...props}
+		tabIndex={0}
+	>
+		{iconLeft && <StyledIconLeft>{iconLeft}</StyledIconLeft>}
+		<span>{children}</span>
+		{iconRight && <StyledIconRight>{iconRight}</StyledIconRight>}
+	</Wrapper>
+)
 
 ControlButton.propTypes = {
 	onClick: PropTypes.func,
@@ -48,3 +48,5 @@ ControlButton.propTypes = {
 	iconLeft: PropTypes.string,
 	iconRight: PropTypes.string
 }
+
+export default ControlButton
