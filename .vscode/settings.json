@@ -1,13 +1,12 @@
 {
-    "search.exclude": {
-        "**/node_modules": true,
-        "**/bower_components": true,
-        "**/lib":true,
-        "**/__snapshots__":true
-    },
-    "cSpell.words": [
-        "Callout",
-        "polyfill",
-        "whitelabel"
-    ]
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/lib": true,
+    "**/__snapshots__": true
+  },
+  "cSpell.words": ["Callout", "polyfill", "whitelabel"],
+  "editor.formatOnSave": true,
+  "prettier.semi": false,
+  "prettier.singleQuote": true
 }

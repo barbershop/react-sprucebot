@@ -24,6 +24,7 @@ import Callout from './components/Callout/Callout'
 import Dialog from './components/Dialog/Dialog'
 import Feed, { FeedItem, FeedAttachment } from './components/Feed/Feed'
 import ControlButton from './components/ControlButton/ControlButton'
+import Icon from './components/Icon/Icon'
 import * as Typography from './components/Typography/Typography'
 import * as List from './components/List/List'
 import * as Tabs from './components/Tabs/Tabs'
@@ -64,6 +65,7 @@ const Sprucebot = {
 	FeedAttachment,
 	TrainingGuide,
 	ControlButton,
+	Icon,
 	...Typography,
 	...List,
 	...Tabs,
