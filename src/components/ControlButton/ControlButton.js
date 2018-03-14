@@ -17,26 +17,17 @@ const Wrapper = styled.a.attrs({
 		`ControlButton control__button ${className || ''}`
 })`
 	cursor: pointer;
-	color: ${props => (props.color ? props.color : '#00aac7')};
 	display: inline-flex;
 	align-items: center;
 	position: relative;
 `
 export default class ControlButton extends Component {
 	render() {
-		const {
-			iconLeft,
-			iconRight,
-			color,
-			onClick,
-			children,
-			...props
-		} = this.props
+		const { iconLeft, iconRight, onClick, children, ...props } = this.props
 
 		return (
 			<Wrapper
 				onClick={onClick}
-				color={color}
 				iconLeft={iconLeft}
 				iconRight={iconRight}
 				{...props}
@@ -51,6 +42,7 @@ export default class ControlButton extends Component {
 }
 
 ControlButton.propTypes = {
+	onClick: PropTypes.func,
 	children: PropTypes.any,
 	className: PropTypes.string,
 	iconLeft: PropTypes.string,

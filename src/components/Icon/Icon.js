@@ -3,9 +3,8 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 
 const I = styled.i.attrs({
-	className: 'Icon icon material-icons'
+	className: ({ className }) => `Icon icon material-icons ${className || ''}`
 })`
-	color: ${props => (props.color ? props.color : 'inherit')};
 	font-family: 'Material Icons';
 	font-weight: normal;
 	font-style: normal;
