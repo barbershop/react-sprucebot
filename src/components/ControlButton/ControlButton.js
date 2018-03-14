@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 
 const Wrapper = styled.a.attrs({
-	className: 'ControlButton icon__button'
+	className: 'ControlButton control__button'
 })`
 	cursor: pointer;
 	color: #00aac7;
@@ -25,6 +25,7 @@ const Icon = styled.i.attrs({
 	letter-spacing: normal;
 	word-wrap: normal;
 	white-space: nowrap;
+	width: 24px;
 	direction: ltr;
 	/* Support for all WebKit browsers. */
 	-webkit-font-smoothing: antialiased;
@@ -35,8 +36,8 @@ const Icon = styled.i.attrs({
 	/* Support for IE. */
 	font-feature-settings: 'liga';
 
-	${props => props.iconLeft && 'margin-right: 0.25em;'} ${props =>
-		props.iconRight && 'margin-left: 0.25em;'};
+	${props => props.iconLeft && 'margin-right: 0.25em;'};
+	${props => props.iconRight && 'margin-left: 0.25em;'};
 `
 
 export default class ControlButton extends Component {
