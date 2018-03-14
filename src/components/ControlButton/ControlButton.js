@@ -6,7 +6,7 @@ const Wrapper = styled.a.attrs({
 	className: 'ControlButton control__button'
 })`
 	cursor: pointer;
-	color: #00aac7;
+	color: ${props => (props.color ? props.color : '#00aac7')};
 	display: inline-flex;
 	align-items: center;
 	position: relative;
@@ -46,16 +46,20 @@ export default class ControlButton extends Component {
 	}
 
 	render() {
-		const props = Object.assign({}, this.props)
-		const children = props.children
-
-		delete props.className
+		const {
+			iconLeft,
+			iconRight,
+			color,
+			onClick,
+			children,
+			...props
+		} = this.props
 
 		return (
-			<Wrapper {...props} tabIndex={0}>
-				{props.iconLeft && <Icon {...props}>{props.iconLeft}</Icon>}
-				{children}
-				{props.iconRight && <Icon {...props}>{props.iconRight}</Icon>}
+			<Wrapper onClick={onClick} color={color} {...props} tabIndex={0}>
+				{iconLeft && <Icon iconLeft={iconLeft}>{iconLeft}</Icon>}
+				<span>{children}</span>
+				{iconRight && <Icon iconLeft={iconLeft}>{iconRight}</Icon>}
 			</Wrapper>
 		)
 	}
