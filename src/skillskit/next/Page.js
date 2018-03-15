@@ -8,6 +8,7 @@ import DevControls from '../../components/DevControls/DevControls'
 import Loader from '../../components/Loader/Loader'
 import qs from 'qs'
 import lang from '../helpers/lang'
+
 const debug = require('debug')('react-sprucebot')
 
 const setCookie = (named, value, req, res) => {
@@ -148,6 +149,7 @@ const Page = Wrapped => {
 				})
 			}
 		}
+
 		async componentDidMount() {
 			window.addEventListener('message', this.messageHandler)
 
@@ -160,6 +162,16 @@ const Page = Wrapped => {
 			} else if (this.props.attemptingReAuth) {
 				skill.forceAuth()
 			}
+
+			// NOTE: Doing this require here so that we can be sure the global window is defined
+			const WebFont = require('webfontloader') //eslint-disable-line
+			WebFont.load({
+				google: {
+					families: ['Material Icons']
+				}
+			})
+
+			console.log('FONT SHOULD BE LOADED')
 		}
 
 		componentWillUnmount() {
