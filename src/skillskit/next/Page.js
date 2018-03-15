@@ -170,8 +170,6 @@ const Page = Wrapped => {
 					families: ['Material Icons']
 				}
 			})
-
-			console.log('FONT SHOULD BE LOADED')
 		}
 
 		componentWillUnmount() {
