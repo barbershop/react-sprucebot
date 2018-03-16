@@ -3,19 +3,20 @@ import PropTypes from 'prop-types'
 import React from 'react'
 
 const I = styled.i.attrs({
-	className: ({ className }) => `Icon icon material-icons ${className || ''}`
+	className: ({ className }) => `Icon icon ${className || ''}`
 })`
 	font-family: 'Material Icons';
 	font-weight: normal;
 	font-style: normal;
-	font-size: 24px; /* Preferred icon size */
+	font-size: 1em;
 	display: inline-block;
+	height: 1em;
 	line-height: 1;
 	text-transform: none;
 	letter-spacing: normal;
 	word-wrap: normal;
 	white-space: nowrap;
-	width: 24px;
+	width: 1em;
 	direction: ltr;
 	/* Support for all WebKit browsers. */
 	-webkit-font-smoothing: antialiased;
