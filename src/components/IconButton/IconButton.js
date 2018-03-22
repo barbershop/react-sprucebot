@@ -7,7 +7,9 @@ import Icon from '../Icon/Icon'
 const Button = styled.button.attrs({
 	className: ({ className }) => `IconButton icon__button ${className || ''}`
 })`
+	align-items: center;
 	background: none;
+	display: flex;
 	margin: 0;
 	padding: 0;
 	width: auto;
