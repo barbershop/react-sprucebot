@@ -20,6 +20,7 @@ const Wrapper = styled.a.attrs({
 	display: inline-flex;
 	align-items: center;
 	position: relative;
+	text-decoration: none;
 `
 const ControlButton = ({
 	iconLeft,
