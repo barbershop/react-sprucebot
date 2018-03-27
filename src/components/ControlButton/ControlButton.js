@@ -12,16 +12,46 @@ const StyledIconRight = styled(Icon)`
 	margin-left: 0.25em;
 `
 
-const Wrapper = styled.a.attrs({
+const Button = styled.button.attrs({
 	className: ({ className }) =>
-		`ControlButton control__button ${className || ''}`
+		`ControlButton control-button ${className || ''}`
 })`
+	align-items: center;
+	background: none;
+	color: #00aac7;
+	display: inline-flex;
+	font-weight: normal;
+	letter-spacing: 0;
+	position: relative;
+	margin: 0;
+	padding: 0;
+	width: auto;
+
+	&:hover {
+		background: none;
+	}
+`
+
+const Link = styled.a.attrs({
+	className: ({ className }) =>
+		`ControlButton control-button ${className || ''}`
+})`
+	align-items: center;
+	color: #00aac7;
 	cursor: pointer;
 	display: inline-flex;
-	align-items: center;
 	position: relative;
 	text-decoration: none;
 `
+
+const Wrapper = ({ href, ...props }) => {
+	if (href && href != '') {
+		return <Link href={href} {...props} />
+	} else {
+		return <Button {...props} />
+	}
+}
+
 const ControlButton = ({
 	iconLeft,
 	iconRight,

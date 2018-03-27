@@ -5,11 +5,13 @@ import React from 'react'
 import Icon from '../Icon/Icon'
 
 const Button = styled.button.attrs({
-	className: ({ className }) => `IconButton icon__button ${className || ''}`
+	className: ({ className }) => `IconButton icon-button ${className || ''}`
 })`
 	align-items: center;
 	background: none;
+	color: #00aac7;
 	display: flex;
+	font-size: 2em;
 	margin: 0;
 	padding: 0;
 	width: auto;
