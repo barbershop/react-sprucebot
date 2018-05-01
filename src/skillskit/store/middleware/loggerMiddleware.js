@@ -1,12 +1,7 @@
-const loggingEnabled = false
-
 export default function loggerMiddleware() {
-	return () => {
+	return ({ getState }) => {
+		const { config } = getState()
 		return next => action => {
-			if (loggingEnabled) {
-				const { type, types, ...rest } = action
-				console.log(`Action ${type || types}`, rest)
-			}
 			next(action)
 		}
 	}

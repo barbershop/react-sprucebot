@@ -1,3 +1,6 @@
+import register from 'babel-core/register'
+import polyfill from 'babel-polyfill'
+
 import Avatar from './components/Avatar/Avatar'
 import BotText from './components/BotText/BotText'
 import Button from './components/Button/Button'
@@ -15,16 +18,31 @@ import Stars from './components/Stars/Stars'
 import DevControls from './components/DevControls/DevControls'
 import * as ButtonGrid from './components/ButtonGrid/ButtonGrid'
 import StatsSlider from './components/StatsSlider/StatsSlider'
+import Styleguide from './components/Styleguide/Styleguide'
+import ImageCropper from './components/ImageCropper/ImageCropper'
+import TrainingGuide from './components/TrainingGuide/TrainingGuide'
+import Onboarding from './components/Onboarding/Onboarding'
+import Callout from './components/Callout/Callout'
+import Dialog from './components/Dialog/Dialog'
+import Error from './components/Error/Error'
+import Feed, { FeedItem, FeedAttachment } from './components/Feed/Feed'
+import Icon from './components/Icon/Icon'
+import IconButton from './components/IconButton/IconButton'
+import ControlButton from './components/ControlButton/ControlButton'
 import * as Typography from './components/Typography/Typography'
 import * as List from './components/List/List'
 import * as Tabs from './components/Tabs/Tabs'
 import skill from './skillskit'
 import _document from './skillskit/next/_document'
 import Page from './skillskit/next/Page'
-import withStore from './skillskit/store/withStore'
+import withStore, { createStore } from './skillskit/store/withStore'
 import lang from './skillskit/helpers/lang'
 
 const Sprucebot = {
+	testUtils: {
+		// Prevent confusion between withStore and createStore
+		createStore
+	},
 	lang,
 	skill,
 	_document,
@@ -46,7 +64,20 @@ const Sprucebot = {
 	StatsSlider,
 	ButtonGrid,
 	Stars,
+	Styleguide,
+	ImageCropper,
 	DevControls,
+	Callout,
+	Feed,
+	FeedItem,
+	Dialog,
+	Error,
+	FeedAttachment,
+	TrainingGuide,
+	Onboarding,
+	Icon,
+	IconButton,
+	ControlButton,
 	...Typography,
 	...List,
 	...Tabs,

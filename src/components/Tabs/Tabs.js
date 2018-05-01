@@ -8,61 +8,67 @@ export class Tabs extends Component {
 	constructor(props) {
 		super(props)
 
-		// normalize children for some checks
-		let children = props.children || []
-		if (!Array.isArray(children)) {
-			children = [children]
-		}
+		const children = React.Children.toArray(props.children)
 
 		// default to first selected item
-		let selected = 0
+		const idx = props.selected || 0
+		let selected = children[idx] && children[idx].key
 
-		children.forEach((tab, idx) => {
-			// lets make sure they are all tab panes
-			if (tab.type.name !== 'TabPane') {
-				throw new Error("<Tabs> can only contain <TapPane>'s as children")
-			}
-
-			if (tab.props.selected) {
-				selected = idx
-			}
-		})
+		if (children.length > 0) {
+			children.some(tab => {
+				if (tab.props.selected) {
+					selected = tab.key
+					return true
+				}
+			})
+		}
 
 		this.state = {
-			selected: selected
+			selected: selected,
+			children
 		}
 	}
-	onTabClick(idx, e) {
+
+	componentWillReceiveProps(nextProps) {
+		const newState = {
+			children: React.Children.toArray(nextProps.children)
+		}
+
+		if (
+			typeof nextProps.selected === 'number' &&
+			nextProps.selected !== this.state.selected
+		) {
+			newState.children.forEach((tab, idx) => {
+				if (idx === nextProps.selected) {
+					newState.selected = tab.key
+				}
+			})
+		}
+
+		this.setState(newState)
+	}
+
+	onTabClick(idx, key, e) {
 		if (this.state.selected !== idx) {
 			if (this.props.onChange) {
 				this.props.onChange(idx, e)
 			}
 			this.setState({
-				selected: idx
+				selected: key
 			})
 		}
 	}
+
 	render() {
-		const props = Object.assign({}, this.props)
-		let { children, className } = props
-		const { selected } = this.state
-
-		delete props.children
-		delete props.onChange
-		delete props.className
-
-		// normalize children (which should only be tabpanes)
-		children = children || []
-		if (!Array.isArray(children)) {
-			children = [children]
-		}
+		const { selected, children } = this.state
+		const { selected: _, ...props } = this.props
 
 		// build tab labels and selected
 		let tabs = []
 		let totalTabs = children.length
 		const tabPanes = []
 
-		children.forEach((tabPane, idx) => {
+		children.forEach((tab, idx) => {
 			let className = ''
 
 			switch (idx) {
@@ -78,27 +84,27 @@ export class Tabs extends Component {
 			}
 
 			// select the proper tab
-			if (selected === idx) {
+			if (selected === tab.key) {
 				className += ' btn__toggle__active'
-				tabPanes.push(tabPane)
+				tabPanes.push(tab)
 			}
 
 			tabs.push(
 				<Button
 					onClick={e => {
-						this.onTabClick(idx, e)
+						this.onTabClick(idx, tab.key, e)
 					}}
 					toggle
 					className={className}
-					key={`tab-${idx}`}
+					key={`tab-${tab.key}`}
 				>
-					{tabPane.props.title}
+					{tab.props.title}
 				</Button>
 			)
 		})
 
 		return (
-			<div className={`tabs__container  ${className}`}>
+			<div className={`tabs__container `} {...props}>
 				<div className="tabs">{tabs}</div>
 				<div className="tab__panes">{tabPanes}</div>
 			</div>
@@ -107,7 +113,8 @@ export class Tabs extends Component {
 }
 
 Tabs.propTypes = {
-	onChange: PropTypes.func
+	onChange: PropTypes.func,
+	selected: PropTypes.number
 }
 
 export class TabPane extends Component {

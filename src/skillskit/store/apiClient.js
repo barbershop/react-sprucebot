@@ -1,8 +1,9 @@
-import fetch from 'isomorphic-fetch'
+import axios from 'axios'
 import https from 'https'
 import http from 'http'
+import qs from 'qs'
 
-const methods = ['GET', 'POST', 'PUT', 'PATCH', 'DEL']
+const methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
 
 class ApiClient {
 	constructor(endpoint, { allowSelfSignedCerts = false }) {
@@ -14,7 +15,7 @@ class ApiClient {
 		methods.forEach(method => {
 			this[method.toLowerCase()] = (path, options = {}) =>
 				new Promise(async (resolve, reject) => {
-					const { body } = options
+					const { body, query } = options
 					try {
 						let headers = {
 							Accept: 'application/json',
@@ -24,7 +25,7 @@ class ApiClient {
 						let fetchOptions = {
 							method,
 							headers,
-							body: JSON.stringify(body)
+							data: body
 						}
 
 						// Allows Node to accept our self signed cert
@@ -32,22 +33,32 @@ class ApiClient {
 							const agent = new https.Agent({
 								rejectUnauthorized: false
 							})
-							fetchOptions.agent = agent
+							fetchOptions.httpsAgent = agent
 						}
 
 						if (this.jwt) {
 							fetchOptions.headers['x-skill-jwt'] = this.jwt
 						}
 
-						// Start network request
-						const response = await fetch(`${endpoint}${path}`, fetchOptions)
-						const json = await response.json()
-						if (!response.ok) {
-							console.log('Request not okay', response.status, json)
-							return reject(json)
+						let fetchUrl = `${endpoint}${path}`
+
+						if (query) {
+							fetchUrl =
+								// determine if we're appending or creating a query string
+								fetchUrl.indexOf('?') > -1
+									? `${fetchUrl}${qs.stringify(query)}`
+									: `${fetchUrl}?${qs.stringify(query)}`
 						}
 
-						resolve(json)
+						// Start network request
+						try {
+							const response = await axios(fetchUrl, fetchOptions)
+							const json = response.data
+							resolve(json)
+						} catch (error) {
+							console.log('Request not ok', error)
+							return reject(error.response.data)
+						}
 					} catch (error) {
 						console.error('Response failure', error)
 						reject(error)

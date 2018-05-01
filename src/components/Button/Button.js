@@ -5,7 +5,6 @@ import Loader from '../Loader/Loader'
 // TODO refactor into styled component
 export default class Button extends Component {
 	render() {
-		const props = Object.assign({}, this.props)
 		const {
 			tag,
 			busy,
@@ -18,23 +17,10 @@ export default class Button extends Component {
 			className,
 			children,
 			submit,
-			href,
 			remove,
-			toggle
-		} = props
-
-		delete props.tag
-		delete props.primary
-		delete props.secondary
-		delete props.alt
-		delete props.children
-		delete props.busy
-		delete props.caution
-		delete props.link
-		delete props.submit
-		delete props.remove
-		delete props.toggle
-		delete props.className
+			toggle,
+			...props
+		} = this.props
 
 		if (primary && secondary) {
 			return (
@@ -66,7 +52,7 @@ export default class Button extends Component {
 		}
 
 		// if this button has a href or is a "remove" button, make it an anchor
-		const Tag = href || remove ? 'a' : tag
+		const Tag = props.href || remove ? 'a' : tag
 
 		return (
 			<Tag className={`${btnClass} ${className || ''}`} {...props}>
@@ -84,7 +70,8 @@ Button.propTypes = {
 	busy: PropTypes.bool,
 	href: PropTypes.string,
 	remove: PropTypes.bool,
-	toggle: PropTypes.bool
+	toggle: PropTypes.bool,
+	type: PropTypes.string.isRequired
 }
 
 Button.defaultProps = {
@@ -94,5 +81,6 @@ Button.defaultProps = {
 	secondary: false,
 	busy: false,
 	remove: false,
-	toggle: false
+	toggle: false,
+	type: 'button'
 }

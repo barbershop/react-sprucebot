@@ -8,6 +8,7 @@ import DevControls from '../../components/DevControls/DevControls'
 import Loader from '../../components/Loader/Loader'
 import qs from 'qs'
 import lang from '../helpers/lang'
+const debug = require('debug')('react-sprucebot')
 
 const setCookie = (named, value, req, res) => {
 	if (req && req.headers) {
@@ -62,27 +63,26 @@ const Page = Wrapped => {
 						setCookie('jwt', query.jwt, req, res)
 					}
 				} catch (err) {
-					console.error(err)
-					console.warn('Error fetching user from jwt')
+					debug(err)
+					debug('Error fetching user from jwt')
 				}
+			} else {
+				debug(
+					'This looks pretty bad. You are missing a jwt and will probably be unauthorized'
+				)
 			}
 
 			const state = store.getState()
-			props = {
-				devMode: state.config.DEV_MODE,
-				...props,
-				...state
-			}
 
-			if (props.auth && !props.auth.error) {
-				props.auth.role =
-					(props.config.DEV_MODE && getCookie('devRole', req, res)) ||
-					props.auth.role
+			if (state.auth && !state.auth.error) {
+				state.auth.role =
+					(state.config.DEV_MODE && getCookie('devRole', req, res)) ||
+					state.auth.role
 			}
 
 			if (ConnectedWrapped.getInitialProps) {
 				const args = Array.from(arguments)
-				args[0] = { ...props, ...args[0] }
+				args[0] = { ...args[0], ...state }
 				props = {
 					...props,
 					...(await ConnectedWrapped.getInitialProps.apply(this, args))
@@ -91,19 +91,24 @@ const Page = Wrapped => {
 
 			let redirect = props.redirect || false
 
-			if (query.back && query.jwt && query.back.search('sprucebot.com') > 0) {
+			if (
+				query.back &&
+				query.jwt &&
+				(query.back.search('sprucebot.com') > 0 ||
+					query.back.search('bshop.io') > 0)
+			) {
 				// if there is a jwt, we are being authed
 				redirect = query.back
 			} else if (
 				!redirect &&
 				!props.public &&
-				(!props.auth || !props.auth.role || props.auth.error)
+				(!state.auth || !state.auth.role || state.auth.error)
 			) {
 				// no redirect is set, we're not public, but auth failed
 				redirect = '/unauthorized'
 			} else if (!redirect && !props.public) {
 				// all things look good, lets just make sure we're in the right area (owner, teammate, or guest)
-				const role = props.auth.role
+				const role = state.auth.role
 				const firstPart = props.pathname.split('/')[1]
 
 				const { jwt, ...rest } = query
@@ -112,13 +117,13 @@ const Page = Wrapped => {
 				// we are at '/' then redirect to the corresponding role's path
 				if (props.pathname === '/') {
 					redirect = `/${role}?${queryString}`
-				} else if (role !== firstPart) {
+				} else if (role !== firstPart && !state.config.DEV_MODE) {
 					redirect = `/unauthorized`
 				}
 			}
 
 			if (redirect && res) {
-				res.writeHead(301, {
+				res.writeHead(302, {
 					Location: redirect
 				})
 				res.end()
@@ -131,7 +136,7 @@ const Page = Wrapped => {
 			// if we are /unauthorized, don't have a cookie, but have NOT done cookie check
 			if (
 				props.pathname === '/unauthorized' &&
-				(!props.auth || !props.auth.role)
+				(!state.auth || !state.auth.role)
 			) {
 				props.attemptingReAuth = true
 			}
@@ -160,6 +165,14 @@ const Page = Wrapped => {
 			} else if (this.props.attemptingReAuth) {
 				skill.forceAuth()
 			}
+
+			// NOTE: Need to do this require here so that we can be sure the global window is defined
+			const WebFont = require('webfontloader') //eslint-disable-line
+			WebFont.load({
+				google: {
+					families: ['Material Icons']
+				}
+			})
 		}
 
 		componentWillUnmount() {
@@ -170,7 +183,7 @@ const Page = Wrapped => {
 			if (this.state.attemptingReAuth) {
 				return <Loader />
 			}
-			if (this.props.devMode) {
+			if (this.props.config.DEV_MODE) {
 				return (
 					<div>
 						<DevControls auth={this.props.auth} />

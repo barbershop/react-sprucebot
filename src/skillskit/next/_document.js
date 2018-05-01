@@ -1,15 +1,28 @@
 import React from 'react'
 import Document, { Head, Main, NextScript } from 'next/document'
 import { ServerStyleSheet } from 'styled-components'
+const debug = require('debug')('react-sprucebot')
 
 export default class MyDocument extends Document {
 	static async getInitialProps({ renderPage, query, store }) {
 		// Build stylesheets from styled-components
 		const sheet = new ServerStyleSheet()
-		const auth = store && store.getState().auth
-		const config = store && store.getState().config
+		const page = renderPage(App => props =>
+			sheet.collectStyles(<App {...props} />)
+		)
+		const styleTags = sheet.getStyleElement()
+		// Store is undefined when hmr is the first
+		// request the server sees after boot
+		// Ideally store is always defined.
+		// Revisit when using `next>5.0.0`
+		if (!store) {
+			debug('No store in _document')
+			return { ...page, styleTags }
+		}
+		const { auth, config } = store.getState()
+		let whitelabel = config.WHITELABEL
 
-		let whitelabel = false
+		let orgWhitelabel
 
 		//we have any whitelabelling happening?
 		if (
@@ -19,20 +32,19 @@ export default class MyDocument extends Document {
 			auth.Location.Organization.allowWhiteLabelling &&
 			auth.Location.Organization.whiteLabellingStylesheetUrl
 		) {
-			whitelabel = auth.Location.Organization.whiteLabellingStylesheetUrl
+			orgWhitelabel = auth.Location.Organization.whiteLabellingStylesheetUrl
 		}
 
-		const page = renderPage(App => props =>
-			sheet.collectStyles(<App {...props} />)
-		)
-		const styleTags = sheet.getStyleElement()
-
-		return { ...page, styleTags, whitelabel, auth, config }
+		return { ...page, styleTags, whitelabel, auth, config, orgWhitelabel }
 	}
 
 	render() {
+		let whitelabelClassName =
+			this.props.config && this.props.config.SLUG
+				? ` skill-${this.props.config.SLUG}`
+				: ''
 		return (
-			<html className="skill">
+			<html className={`skill${whitelabelClassName}`}>
 				<Head>
 					<title>{this.props.name}</title>
 					<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -54,6 +66,20 @@ export default class MyDocument extends Document {
 							charSet="UTF-8"
 						/>
 					)}
+					{this.props.orgWhitelabel && (
+						<link
+							href={this.props.orgWhitelabel}
+							rel="stylesheet"
+							type="text/css"
+							charSet="UTF-8"
+						/>
+					)}
+					<style jsx global>{`
+						html,
+						body {
+							overflow: hidden;
+						}
+					`}</style>
 				</Head>
 				<body>
 					<Main />
